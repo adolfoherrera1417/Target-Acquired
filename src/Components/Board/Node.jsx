@@ -17,7 +17,8 @@ export default class Node extends Component {
           cordinate: props.cordinate,
           start: props.start ? true : false,
           end: props.end ? true : false,
-          visited: props.visited
+          visited: props.visited,
+          onMouseDown: this.props.onMouseDown
         };
     }
 
@@ -32,7 +33,11 @@ export default class Node extends Component {
         }
 
         return (
-            <div id={`node-${this.state.cordinate[0]}-${this.state.cordinate[1]}`} className="node">
+            <div 
+                id={`node-${this.state.cordinate[0]}-${this.state.cordinate[1]}`} 
+                className="node"
+                onMouseDown={() => this.state.onMouseDown(this.state.cordinate[0],this.state.cordinate[1])}
+                >
                 {cell}
             </div>
         )

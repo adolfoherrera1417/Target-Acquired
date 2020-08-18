@@ -1,23 +1,9 @@
 import {Queue} from './Queue'
 
 
-const solve = (start) => {
+const solve = (matrix, start) => {
     var queue = new Queue();
-    
-    // Create matrix with walls
-    let mat = []
-    for (let i = 0; i < 10;i++) {
-        mat.push(new Array(10).fill("P"))
-    }
-    mat[0][6] = "W";
-    mat[1][6] = "W";
-    mat[2][6] = "W";
-    mat[3][6] = "W";
-    mat[4][6] = "W";
-    mat[5][5] = "W";
-    mat[6][5] = "W";
-    mat[7][4] = "W";
-    mat[7][8] = "T";
+
     // Create visited matrix
     var visited = []
     for(var i = 0; i < 10; i++) {
@@ -41,10 +27,10 @@ const solve = (start) => {
         let x = node.x;
         let y = node.y;
 
-        if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || mat[x][y] === "W" || visited[x][y]) {
+        if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
 			continue;
         }
-        if(mat[x][y] === "T") {
+        if(matrix[x][y] === "T") {
             break;
         }
         visited[x][y] = true;
@@ -79,8 +65,8 @@ const reconstructPath = (start, end, prev) => {
     return reversed;
 }
 
-export const BFSShortestPath = (n) => {
-    let {prev,visitedPathInOrder} = solve({x: 0, y: 0});
-    let path = reconstructPath({x: 0, y: 0},{x: 7, y: 7},prev)
+export const BFSShortestPath = (matrix) => {
+    let {prev,visitedPathInOrder} = solve(matrix, {x: 0, y: 0});
+    let path = reconstructPath({x: 0, y: 0},{x: 7, y: 8},prev)
     return {path,visitedPathInOrder};
 }
