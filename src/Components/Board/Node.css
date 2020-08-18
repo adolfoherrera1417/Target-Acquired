@@ -1,0 +1,18 @@
+.node {
+    border: solid;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+
+.visited {
+    background-color: blue;
+}
+
+.path {
+    background-color: chartreuse;
+}
+
+.wall {
+    background-color: black;
+}
