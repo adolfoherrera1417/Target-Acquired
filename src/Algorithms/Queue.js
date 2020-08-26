@@ -27,7 +27,7 @@ export function Queue(){
 
   // Returns true if the queue is empty, and false otherwise.
   this.isEmpty = function(){
-    return (queue.length == 0);
+    return (queue.length === 0);
   }
 
   /* Enqueues the specified item. The parameter is:
@@ -44,7 +44,7 @@ export function Queue(){
   this.dequeue = function(){
 
     // if the queue is empty, return immediately
-    if (queue.length == 0) return undefined;
+    if (queue.length === 0) return undefined;
 
     // store the item at the front of the queue
     var item = queue[offset];

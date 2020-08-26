@@ -3,10 +3,6 @@ import Node from './Node'
 import Temp from './Temp'
 import {BFSShortestPath} from '../../Algorithms/BFS.js'
 
-
-// const walls = [[0,6],[1,6],[2,6],[3,6],[4,6],[5,5],[6,5],[7,4]]
-
-
 export default class Board extends Component {
 
     constructor(props) {
@@ -17,6 +13,7 @@ export default class Board extends Component {
         }      
         
         this.handleClick = this.handleClick.bind(this)
+        this.handleCleanBoard = this.handleCleanBoard.bind(this)
     }
 
     componentDidMount() {
@@ -24,16 +21,10 @@ export default class Board extends Component {
     }
 
     handleMouseDown = (x,y) => {
-        // Tell item clicked that it is now a wall
-        // There are multiple ways of diong this.
-        // 1. We can find the node by id and replace it to black. And also mark the grid with a "W". Will not be remembered by state.
-        // 2. Tell the node itself that he is now a wall. (Harder)
         document.getElementById(`node-${x}-${y}`).className = 'node wall';
         let {matrix} = this.state
         matrix[x][y] = "W";
         this.setState({matrix})
-        
-
     }
 
     handleClick() {
@@ -52,6 +43,23 @@ export default class Board extends Component {
                 },50*j);}},10*i)
             }
         }
+    }
+
+    handleCleanBoard() {
+        let {matrix} = this.state
+        for(let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                document.getElementById(`node-${i}-${j}`).className = 'node';
+                if((i === 7) && (j === 8)) {
+                    continue 
+                } else {
+                    matrix[i][j] = "P"
+                    
+                }
+            }
+        }
+
+        this.setState({matrix})
     }
 
     createBoard() {
@@ -85,10 +93,11 @@ export default class Board extends Component {
     
     render() {
         return (
-            <div style={{width: "460px"}}>
+            <div style={{width: "460px", marginLeft:"auto", marginRight: "auto"}}>
                 <Temp title={"BFS Path Animation"}/>
                 {this.state.grid}
                 <button onClick={this.handleClick}>View Animation</button>
+                <button onClick={this.handleCleanBoard}>Clear Board</button>
             </div>
         )
     }

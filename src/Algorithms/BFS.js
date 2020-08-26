@@ -6,13 +6,13 @@ const solve = (matrix, start) => {
 
     // Create visited matrix
     var visited = []
-    for(var i = 0; i < 10; i++) {
+    for(let i = 0; i < 10; i++) {
         visited.push(new Array(10).fill(false))
     }
 
     // create prev matrix
     var prev = []
-    for(var i = 0; i < 10; i++) {
+    for(let i = 0; i < 10; i++) {
         prev.push(new Array(10).fill(null))
     }
 
@@ -56,7 +56,7 @@ const solve = (matrix, start) => {
 const reconstructPath = (start, end, prev) => {
     let temp = [];
 
-    while (end.x != start.x || end.y != start.y) {
+    while (end.x !== start.x || end.y !== start.y) {
         temp.push(end);
         end = prev[end.x][end.y];
     }
