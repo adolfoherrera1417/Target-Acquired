@@ -44,8 +44,9 @@ export default class Board extends Component {
 
     handleClick() {
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix)
-
+        
         for(let i = 0; i < visitedPathInOrder.length; i++) {
+
             setTimeout(() => {
                 document.getElementById(`node-${visitedPathInOrder[i].x}-${visitedPathInOrder[i].y}`).className = 'node visited';
             },10*i);
@@ -64,8 +65,10 @@ export default class Board extends Component {
         let {matrix} = this.state
         for(let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                if((i === 7) && (j === 8)) {
-                    continue 
+                if(matrix[i][j] === "T") {
+                    document.getElementById(`node-${i}-${j}`).className = 'node endNode';
+                } else if (matrix[i][j] === "S") {
+                    document.getElementById(`node-${i}-${j}`).className = 'node startNode';
                 } else {
                     matrix[i][j] = "P"
                     document.getElementById(`node-${i}-${j}`).className = 'node';
@@ -101,6 +104,7 @@ export default class Board extends Component {
             matrix.push(new Array(10).fill("P"))
         }
         matrix[7][8] = "T"
+        matrix[0][0] = "S"
 
         this.setState({
             grid: row,

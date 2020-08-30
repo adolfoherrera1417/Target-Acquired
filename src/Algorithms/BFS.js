@@ -1,6 +1,5 @@
 import {Queue} from './Queue'
 
-
 const solve = (matrix, start) => {
     var queue = new Queue();
 
@@ -60,7 +59,7 @@ const reconstructPath = (start, end, prev) => {
         temp.push(end);
         end = prev[end.x][end.y];
     }
-
+    temp.push({x: 0, y: 0});
     let reversed = temp.reverse();
     return reversed;
 }
