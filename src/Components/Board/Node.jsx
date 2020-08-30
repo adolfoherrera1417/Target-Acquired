@@ -5,8 +5,6 @@
 import React, { Component } from 'react'
 
 import './Node.css'
-const startStyle = {backgroundColor: "green"}
-const endStyle = {backgroundColor: "red"}
 
 export default class Node extends Component {
     

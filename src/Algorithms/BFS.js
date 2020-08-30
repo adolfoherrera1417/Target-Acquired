@@ -59,13 +59,13 @@ const reconstructPath = (start, end, prev) => {
         temp.push(end);
         end = prev[end.x][end.y];
     }
-    temp.push({x: 0, y: 0});
+    temp.push(start);
     let reversed = temp.reverse();
     return reversed;
 }
 
-export const BFSShortestPath = (matrix) => {
-    let {prev,visitedPathInOrder} = solve(matrix, {x: 0, y: 0});
-    let path = reconstructPath({x: 0, y: 0},{x: 7, y: 8},prev)
+export const BFSShortestPath = (matrix, startNode) => {
+    let {prev,visitedPathInOrder} = solve(matrix, startNode);
+    let path = reconstructPath(startNode,{x: 7, y: 8},prev)
     return {path,visitedPathInOrder};
 }
