@@ -16,3 +16,11 @@
 .wall {
     background-color: black;
 }
+
+.startNode {
+    background-color: green;
+}
+
+.endNode {
+    background-color: red;
+}

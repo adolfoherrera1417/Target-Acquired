@@ -18,27 +18,23 @@ export default class Node extends Component {
           start: props.start ? true : false,
           end: props.end ? true : false,
           visited: props.visited,
-          onMouseDown: this.props.onMouseDown
+          onMouseDown: this.props.onMouseDown,
+          onMouseEnter: this.props.onMouseEnter,
+          onMouseUp: this.props.onMouseUp,
         };
     }
 
     render() {
-        let cell;
-        if (this.state.start) {
-            cell = <div style={startStyle}><p>{this.state.cordinate[0]},{this.state.cordinate[1]}</p></div>
-        } else if(this.state.end) {
-            cell = <div style={endStyle}><p>{this.state.cordinate[0]},{this.state.cordinate[1]}</p></div>
-        } else {
-            cell = <div><p>{this.state.cordinate[0]},{this.state.cordinate[1]}</p></div>
-        }
-
+        const className = this.state.start ? "startNode" : this.state.end ? "endNode" : ' ';
         return (
             <div 
                 id={`node-${this.state.cordinate[0]}-${this.state.cordinate[1]}`} 
-                className="node"
+                className={'node ' + className}
                 onMouseDown={() => this.state.onMouseDown(this.state.cordinate[0],this.state.cordinate[1])}
+                onMouseEnter={() => this.state.onMouseEnter(this.state.cordinate[0],this.state.cordinate[1])}
+                onMouseUp={() => this.state.onMouseUp()}
                 >
-                {cell}
+                
             </div>
         )
     }

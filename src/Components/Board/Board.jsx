@@ -9,7 +9,8 @@ export default class Board extends Component {
         super(props)
         this.state = {
             grid: [],
-            matrix: []
+            matrix: [],
+            mouseIsPressed: false
         }      
         
         this.handleClick = this.handleClick.bind(this)
@@ -24,7 +25,21 @@ export default class Board extends Component {
         document.getElementById(`node-${x}-${y}`).className = 'node wall';
         let {matrix} = this.state
         matrix[x][y] = "W";
-        this.setState({matrix})
+        this.setState({matrix,mouseIsPressed: true});
+    }
+
+    handleMouseEnter = (x,y) => {
+        if (!this.state.mouseIsPressed ){return;}
+        document.getElementById(`node-${x}-${y}`).className = 'node wall';
+        let {matrix} = this.state
+        matrix[x][y] = "W";
+        this.setState({matrix});
+    }
+
+    handleMouseUp = () => {
+        this.setState({
+            mouseIsPressed: false
+        })
     }
 
     handleClick() {
@@ -49,16 +64,14 @@ export default class Board extends Component {
         let {matrix} = this.state
         for(let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                document.getElementById(`node-${i}-${j}`).className = 'node';
                 if((i === 7) && (j === 8)) {
                     continue 
                 } else {
                     matrix[i][j] = "P"
-                    
+                    document.getElementById(`node-${i}-${j}`).className = 'node';
                 }
             }
         }
-
         this.setState({matrix})
     }
 
@@ -72,7 +85,12 @@ export default class Board extends Component {
                 } else if (i === 7 && j === 8) {
                     col.push(<Node key={`${i}${j}`} cordinate={[i,j]} end={true}/>)
                 } else {
-                    col.push(<Node key={`${i}${j}`} cordinate={[i,j]} onMouseDown={(i,j) => this.handleMouseDown(i,j)}/>)
+                    col.push(<Node key={`${i}${j}`} 
+                                cordinate={[i,j]} 
+                                onMouseDown={(i,j) => this.handleMouseDown(i,j)}
+                                onMouseEnter={(i,j) => this.handleMouseEnter(i,j)}
+                                onMouseUp = {() => this.handleMouseUp()}
+                                />)
                 }
             }
             row.push(col);
