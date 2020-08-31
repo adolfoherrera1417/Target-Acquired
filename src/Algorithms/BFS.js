@@ -1,6 +1,6 @@
 import {Queue} from './Queue'
 
-const solve = (matrix, start) => {
+const solve = (matrix, start, endNode) => {
     var queue = new Queue();
 
     // Create visited matrix
@@ -29,7 +29,8 @@ const solve = (matrix, start) => {
         if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
 			continue;
         }
-        if(matrix[x][y] === "T") {
+        // matrix[x][y] === "T" 
+        if(endNode.x === x && endNode.y === y) {
             break;
         }
         visited[x][y] = true;
@@ -64,8 +65,8 @@ const reconstructPath = (start, end, prev) => {
     return reversed;
 }
 
-export const BFSShortestPath = (matrix, startNode) => {
-    let {prev,visitedPathInOrder} = solve(matrix, startNode);
-    let path = reconstructPath(startNode,{x: 7, y: 8},prev)
+export const BFSShortestPath = (matrix, startNode, endNode) => {
+    let {prev,visitedPathInOrder} = solve(matrix, startNode, endNode);
+    let path = reconstructPath(startNode,endNode,prev)
     return {path,visitedPathInOrder};
 }

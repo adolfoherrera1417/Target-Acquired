@@ -15,6 +15,11 @@ export default class Board extends Component {
                 startNodeIsPressed: false,
                 x: 0,
                 y: 0
+            },
+            endNodeState: {
+                pressed: false,
+                x: 7,
+                y: 8
             }
         }      
         
@@ -32,6 +37,10 @@ export default class Board extends Component {
             let {startNodeState} = this.state;
             startNodeState.startNodeIsPressed = true;
             this.setState({startNodeState})
+        } else if (matrix[x][y] === "T") {
+            let {endNodeState} = this.state;
+            endNodeState.pressed = true;
+            this.setState({endNodeState});
         } else {
             document.getElementById(`node-${x}-${y}`).className = 'node wall';
             let {matrix} = this.state
@@ -41,38 +50,44 @@ export default class Board extends Component {
     }
 
     handleMouseEnter = (x,y) => {
-        if (!(this.state.mouseIsPressed || this.state.startNodeState.startNodeIsPressed )){return;}
+        if (!(this.state.mouseIsPressed || this.state.startNodeState.startNodeIsPressed || this.state.endNodeState.pressed)){return;}
         let {matrix} = this.state;
-        console.log("Hello world")
         if (this.state.startNodeState.startNodeIsPressed) {
-            console.log("Hello World")
             let {startNodeState} = this.state
             document.getElementById(`node-${startNodeState.x}-${startNodeState.y}`).className = 'node';
             startNodeState.x = x;
             startNodeState.y = y;
             document.getElementById(`node-${x}-${y}`).className = 'node startNode';
             this.setState({startNodeState})
+        } else if (this.state.endNodeState.pressed) {
+            let {endNodeState} = this.state;
+            document.getElementById(`node-${endNodeState.x}-${endNodeState.y}`).className = 'node';
+            endNodeState.x = x;
+            endNodeState.y = y;
+            document.getElementById(`node-${x}-${y}`).className = 'node endNode';
+            this.setState({endNodeState});
         } else {
             document.getElementById(`node-${x}-${y}`).className = 'node wall';
             let {matrix} = this.state
             matrix[x][y] = "W";
         }
-
         this.setState({matrix});
     }
 
     handleMouseUp = () => {
-        let {startNodeState} = this.state
+        let {startNodeState} = this.state;
+        let {endNodeState} = this.state;
         startNodeState.startNodeIsPressed = false;
+        endNodeState.pressed = false;
         this.setState({
             mouseIsPressed: false,
-            startNodeState
+            startNodeState,
+            endNodeState
         })
     }
 
     handleClick() {
-        let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y})
-        
+        let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
         for(let i = 0; i < visitedPathInOrder.length; i++) {
 
             setTimeout(() => {
