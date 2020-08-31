@@ -26,10 +26,10 @@ const solve = (matrix, start, endNode) => {
         let x = node.x;
         let y = node.y;
 
-        if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
+        if ((x <= 0) || (y <= 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
 			continue;
         }
-        // matrix[x][y] === "T" 
+        
         if(endNode.x === x && endNode.y === y) {
             break;
         }

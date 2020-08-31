@@ -32,18 +32,17 @@ export default class Board extends Component {
     }
 
     handleMouseDown = (x,y) => {
-        let {matrix} = this.state;
-        if (matrix[x][y] === "S") {
+        if (this.state.startNodeState.x === x && this.state.startNodeState.y === y) {
             let {startNodeState} = this.state;
             startNodeState.startNodeIsPressed = true;
-            this.setState({startNodeState})
-        } else if (matrix[x][y] === "T") {
+            this.setState({startNodeState});
+        } else if (this.state.endNodeState.x === x && this.state.endNodeState.y === y) {
             let {endNodeState} = this.state;
             endNodeState.pressed = true;
             this.setState({endNodeState});
         } else {
             document.getElementById(`node-${x}-${y}`).className = 'node wall';
-            let {matrix} = this.state
+            let {matrix} = this.state;
             matrix[x][y] = "W";
             this.setState({matrix,mouseIsPressed: true});
         }
