@@ -24,7 +24,7 @@ export default class Board extends Component {
         }      
         
         this.handleClick = this.handleClick.bind(this)
-        this.handleCleanBoard = this.handleCleanBoard.bind(this)
+        this.handleClearPath = this.handleClearPath.bind(this)
     }
 
     componentDidMount() {
@@ -87,29 +87,34 @@ export default class Board extends Component {
 
     handleClick() {
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
+        let {startNodeState,endNodeState} = this.state
         for(let i = 0; i < visitedPathInOrder.length; i++) {
 
             setTimeout(() => {
-                document.getElementById(`node-${visitedPathInOrder[i].x}-${visitedPathInOrder[i].y}`).className = 'node visited';
+                if (!((startNodeState.x === visitedPathInOrder[i].x && startNodeState.y === visitedPathInOrder[i].y) || (endNodeState.x === visitedPathInOrder[i].x && endNodeState.y === visitedPathInOrder[i].y))) {
+                    document.getElementById(`node-${visitedPathInOrder[i].x}-${visitedPathInOrder[i].y}`).className = 'node visited';
+                }
             },10*i);
 
             if (i === visitedPathInOrder.length-1) {
                 setTimeout(() => {
                 for (let j = 0; j < path.length; j++) {
-                    setTimeout(() => {
-                    document.getElementById(`node-${path[j].x}-${path[j].y}`).className = 'node path';
+                    setTimeout(() => {  
+                    if (!((startNodeState.x === path[j].x && startNodeState.y === path[j].y) || (endNodeState.x === path[j].x && endNodeState.y === path[j].y))) {
+                        document.getElementById(`node-${path[j].x}-${path[j].y}`).className = 'node path';
+                    }
                 },50*j);}},10*i)
             }
         }
     }
 
-    handleCleanBoard() {
-        let {matrix} = this.state
+    handleClearPath() {
+        let {matrix,startNodeState,endNodeState} = this.state
         for(let i = 0; i < 10; i++) {
             for (let j = 0; j < 10; j++) {
-                if(matrix[i][j] === "T") {
+                if(endNodeState.x === i && endNodeState.y === j) {
                     document.getElementById(`node-${i}-${j}`).className = 'node endNode';
-                } else if (matrix[i][j] === "S") {
+                } else if (startNodeState.x === i && startNodeState.y === j) {
                     document.getElementById(`node-${i}-${j}`).className = 'node startNode';
                 } else {
                     matrix[i][j] = "P"
@@ -171,7 +176,7 @@ export default class Board extends Component {
                 <Temp title={"BFS Path Animation"}/>
                 {this.state.grid}
                 <button onClick={this.handleClick}>View Animation</button>
-                <button onClick={this.handleCleanBoard}>Clear Board</button>
+                <button onClick={this.handleClearPath}>Clear Path</button>
             </div>
         )
     }

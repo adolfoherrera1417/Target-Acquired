@@ -1,7 +1,3 @@
-// I want to create a BFS visiualizer.
-// Currently having a problem with notifying which node i have visited
-// iterating thrugh my matrix of node components. I need to say hey you at [1][1] i visited you turn blue
-
 import React, { Component } from 'react'
 
 import './Node.css'
@@ -32,7 +28,6 @@ export default class Node extends Component {
                 onMouseEnter={() => this.state.onMouseEnter(this.state.cordinate[0],this.state.cordinate[1])}
                 onMouseUp={() => this.state.onMouseUp()}
                 >
-                <p>{`${this.state.cordinate[0]},${this.state.cordinate[1]}`}</p>
             </div>
         )
     }

@@ -2,7 +2,7 @@ import {Queue} from './Queue'
 
 const solve = (matrix, start, endNode) => {
     var queue = new Queue();
-
+    let found = false;
     // Create visited matrix
     var visited = []
     for(let i = 0; i < 10; i++) {
@@ -34,6 +34,7 @@ const solve = (matrix, start, endNode) => {
         visitedPathInOrder.push({x,y})
 
         if(endNode.x === x && endNode.y === y) {
+            found = true;
             break;
         }
 
@@ -52,15 +53,12 @@ const solve = (matrix, start, endNode) => {
 
     }
 
-    return {prev,visitedPathInOrder};
+    return {prev,visitedPathInOrder,found};
 
 }
 
 const reconstructPath = (start, end, prev) => {
     let temp = [];
-    console.log(start);
-    console.log(end);
-    console.log(prev);
     while (end.x !== start.x || end.y !== start.y) {
         temp.push(end);
         end = prev[end.x][end.y];
@@ -71,7 +69,7 @@ const reconstructPath = (start, end, prev) => {
 }
 
 export const BFSShortestPath = (matrix, startNode, endNode) => {
-    let {prev,visitedPathInOrder} = solve(matrix, startNode, endNode);
-    let path = reconstructPath(startNode,endNode,prev);
+    let {prev,visitedPathInOrder,found} = solve(matrix, startNode, endNode);
+    let path = found ? reconstructPath(startNode,endNode,prev) : [];
     return {path,visitedPathInOrder};
 }
