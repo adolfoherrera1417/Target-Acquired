@@ -5,14 +5,14 @@ const solve = (matrix, start, endNode) => {
     let found = false;
     // Create visited matrix
     var visited = []
-    for(let i = 0; i < 10; i++) {
-        visited.push(new Array(10).fill(false))
+    for(let i = 0; i < 20; i++) {
+        visited.push(new Array(20).fill(false))
     }
 
     // create prev matrix
     var prev = []
-    for(let i = 0; i < 10; i++) {
-        prev.push(new Array(10).fill(null))
+    for(let i = 0; i < 20; i++) {
+        prev.push(new Array(20).fill(null))
     }
 
     let visitedPathInOrder = []
@@ -26,7 +26,7 @@ const solve = (matrix, start, endNode) => {
         let x = node.x;
         let y = node.y;
 
-        if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
+        if ((x < 0) || (y < 0) || (x >= 20) || (y >= 20) || matrix[x][y] === "W" || visited[x][y]) {
 			continue;
         }
     
@@ -43,10 +43,10 @@ const solve = (matrix, start, endNode) => {
 		if(y - 1 >= 0 && !visited[x][y-1]) {prev[x][y-1] = node;}
 
 		queue.enqueue({x,y:y+1}); //right;
-		if (y+1 < 10 && !visited[x][y+1]) {prev[x][y+1] = node;}
+		if (y+1 < 20 && !visited[x][y+1]) {prev[x][y+1] = node;}
 
 		queue.enqueue({x: x+1,y}); //top;
-		if(x + 1 < 10 && !visited[x+1][y]) {prev[x+1][y] = node;}
+		if(x + 1 < 20 && !visited[x+1][y]) {prev[x+1][y] = node;}
 
 		queue.enqueue({x: x-1,y}); //bottom;
 		if(x - 1 >= 0 && !visited[x-1][y]) {prev[x-1][y] = node;}

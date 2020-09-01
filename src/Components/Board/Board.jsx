@@ -110,8 +110,8 @@ export default class Board extends Component {
 
     handleClearPath() {
         let {matrix,startNodeState,endNodeState} = this.state
-        for(let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
+        for(let i = 0; i < 20; i++) {
+            for (let j = 0; j < 20; j++) {
                 if(endNodeState.x === i && endNodeState.y === j) {
                     document.getElementById(`node-${i}-${j}`).className = 'node endNode';
                 } else if (startNodeState.x === i && startNodeState.y === j) {
@@ -127,9 +127,9 @@ export default class Board extends Component {
 
     createBoard() {
         let row = [];
-        for(let i = 0; i < 10; i++) {
+        for(let i = 0; i < 20; i++) {
             let col = []
-            for(let j = 0; j < 10; j++) {
+            for(let j = 0; j < 20; j++) {
                 if (i === 0 && j === 0) {
                     col.push(<Node key={`${i}${j}`} 
                                     cordinate={[i,j]} 
@@ -157,8 +157,8 @@ export default class Board extends Component {
         }
 
         let matrix = []
-        for (let i = 0; i < 10;i++) {
-            matrix.push(new Array(10).fill("P"))
+        for (let i = 0; i < 20;i++) {
+            matrix.push(new Array(20).fill("P"))
         }
         matrix[7][8] = "T"
         matrix[0][0] = "S"
@@ -172,7 +172,7 @@ export default class Board extends Component {
     
     render() {
         return (
-            <div style={{width: "460px", marginLeft:"auto", marginRight: "auto"}}>
+            <div style={{width: "650px", marginLeft:"auto", marginRight: "auto"}}>
                 <Temp title={"BFS Path Animation"}/>
                 {this.state.grid}
                 <button onClick={this.handleClick}>View Animation</button>
