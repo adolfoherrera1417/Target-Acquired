@@ -32,7 +32,7 @@ export default class Node extends Component {
                 onMouseEnter={() => this.state.onMouseEnter(this.state.cordinate[0],this.state.cordinate[1])}
                 onMouseUp={() => this.state.onMouseUp()}
                 >
-                
+                <p>{`${this.state.cordinate[0]},${this.state.cordinate[1]}`}</p>
             </div>
         )
     }

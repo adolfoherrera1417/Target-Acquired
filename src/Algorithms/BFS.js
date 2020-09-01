@@ -26,17 +26,20 @@ const solve = (matrix, start, endNode) => {
         let x = node.x;
         let y = node.y;
 
-        if ((x <= 0) || (y <= 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
+        if ((x < 0) || (y < 0) || (x >= 10) || (y >= 10) || matrix[x][y] === "W" || visited[x][y]) {
 			continue;
         }
-        
+    
+        visited[x][y] = true;
+        visitedPathInOrder.push({x,y})
+
         if(endNode.x === x && endNode.y === y) {
             break;
         }
-        visited[x][y] = true;
-        visitedPathInOrder.push({x,y})
+
+
         queue.enqueue({x: x,y: y-1}); //left;
-		if(y - 1 > 0 && !visited[x][y-1]) {prev[x][y-1] = node;}
+		if(y - 1 >= 0 && !visited[x][y-1]) {prev[x][y-1] = node;}
 
 		queue.enqueue({x,y:y+1}); //right;
 		if (y+1 < 10 && !visited[x][y+1]) {prev[x][y+1] = node;}
@@ -45,7 +48,7 @@ const solve = (matrix, start, endNode) => {
 		if(x + 1 < 10 && !visited[x+1][y]) {prev[x+1][y] = node;}
 
 		queue.enqueue({x: x-1,y}); //bottom;
-		if(x - 1 > 0 && !visited[x-1][y]) {prev[x-1][y] = node;}
+		if(x - 1 >= 0 && !visited[x-1][y]) {prev[x-1][y] = node;}
 
     }
 
@@ -55,7 +58,9 @@ const solve = (matrix, start, endNode) => {
 
 const reconstructPath = (start, end, prev) => {
     let temp = [];
-
+    console.log(start);
+    console.log(end);
+    console.log(prev);
     while (end.x !== start.x || end.y !== start.y) {
         temp.push(end);
         end = prev[end.x][end.y];
@@ -67,6 +72,6 @@ const reconstructPath = (start, end, prev) => {
 
 export const BFSShortestPath = (matrix, startNode, endNode) => {
     let {prev,visitedPathInOrder} = solve(matrix, startNode, endNode);
-    let path = reconstructPath(startNode,endNode,prev)
+    let path = reconstructPath(startNode,endNode,prev);
     return {path,visitedPathInOrder};
 }
