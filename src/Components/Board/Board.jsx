@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Node from './Node'
-import Temp from './Temp'
 import {BFSShortestPath} from '../../Algorithms/BFS.js'
 
 export default class Board extends Component {
@@ -23,7 +22,7 @@ export default class Board extends Component {
             }
         }      
         
-        this.handleClick = this.handleClick.bind(this)
+        this.animatePath = this.animatePath.bind(this)
         this.handleClearPath = this.handleClearPath.bind(this)
     }
 
@@ -85,7 +84,7 @@ export default class Board extends Component {
         })
     }
 
-    handleClick() {
+    animatePath() {
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
         let {startNodeState,endNodeState} = this.state
         for(let i = 0; i < visitedPathInOrder.length; i++) {
@@ -126,42 +125,26 @@ export default class Board extends Component {
     }
 
     createBoard() {
+        //Create visual grid
         let row = [];
         for(let i = 0; i < 20; i++) {
-            let col = []
+            let col = [];
             for(let j = 0; j < 20; j++) {
-                if (i === 0 && j === 0) {
-                    col.push(<Node key={`${i}${j}`} 
-                                    cordinate={[i,j]} 
-                                    onMouseDown={(i,j) => this.handleMouseDown(i,j)}
-                                    onMouseEnter={(i,j) => this.handleMouseEnter(i,j)}
-                                    onMouseUp = {() => this.handleMouseUp()}
-                                    start={true}/>)
-                } else if (i === 7 && j === 8) {
-                    col.push(<Node key={`${i}${j}`}
-                                    cordinate={[i,j]}
-                                    onMouseDown={(i,j) => this.handleMouseDown(i,j)}
-                                    onMouseEnter={(i,j) => this.handleMouseEnter(i,j)}
-                                    nMouseUp = {() => this.handleMouseUp()} 
-                                    end={true}/>)
-                } else {
-                    col.push(<Node key={`${i}${j}`} 
+                const nodeType = (i === 0 && j === 0) ? "start" : (i === 7 && j === 8) ? "end" : "regular";
+                col.push(<Node key={`${i}${j}`} 
                                 cordinate={[i,j]} 
                                 onMouseDown={(i,j) => this.handleMouseDown(i,j)}
                                 onMouseEnter={(i,j) => this.handleMouseEnter(i,j)}
                                 onMouseUp = {() => this.handleMouseUp()}
-                                />)
-                }
+                                type={nodeType}/>);
             }
             row.push(col);
         }
-
+        // Create backend grid
         let matrix = []
         for (let i = 0; i < 20;i++) {
             matrix.push(new Array(20).fill("P"))
         }
-        matrix[7][8] = "T"
-        matrix[0][0] = "S"
 
         this.setState({
             grid: row,
@@ -172,10 +155,9 @@ export default class Board extends Component {
     
     render() {
         return (
-            <div style={{width: "650px", marginLeft:"auto", marginRight: "auto"}}>
-                <Temp title={"BFS Path Animation"}/>
+            <div style={{width: "500px", marginLeft:"auto", marginRight: "auto"}}>
                 {this.state.grid}
-                <button onClick={this.handleClick}>View Animation</button>
+                <button onClick={this.animatePath}>View Animation</button>
                 <button onClick={this.handleClearPath}>Clear Path</button>
             </div>
         )
