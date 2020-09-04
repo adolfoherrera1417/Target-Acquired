@@ -9,10 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import BlurOnSharpIcon from '@material-ui/icons/BlurOnSharp';
+import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
 import Board from '../Components/Board/Board'
-
+import Divider from '@material-ui/core/Divider'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    color: "#424242" 
   },
   drawerPaper: {
     width: drawerWidth,
@@ -39,9 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PermanentDrawerLeft() {
-  const classes = useStyles();
 
+export default function PermanentDrawerLeft() {
+  const { forwardRef, useRef, useImperativeHandle } = React;
+  const classes = useStyles();
+  const childRef = useRef();
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -61,10 +64,20 @@ export default function PermanentDrawerLeft() {
         anchor="left"
       >
         <div className={classes.toolbar} />
+        <Divider />
         <List>
-          {['Visuilize BFS', 'Visuilize A*', 'Clear Path', 'Clear Walls', 'Clear Board'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+          {['Visuilize BFS', 'Visuilize A*'].map((text, index) => (
+            <ListItem button key={text} onClick={() => childRef.current.animatePath(index)}>
+              <ListItemIcon><BlurOnSharpIcon /></ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {['Clear Path', 'Clear Walls', 'Clear Board', 'Generate Pixel Art'].map((text, index) => (
+            <ListItem button key={text} onClick={() => {console.log(index)}}>
+              <ListItemIcon><HighlightOffOutlinedIcon /></ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
@@ -77,7 +90,7 @@ export default function PermanentDrawerLeft() {
           My goal here was to understand the basis of path finding algorithms, and to have a better understanding of how these simple programs work.
           Currently you can view BFS but I will be updating the site with more!
         </Typography>
-        <Board />
+        <Board ref={childRef}/>
       </main>
     </div>
   );

@@ -2,6 +2,21 @@ import React, { Component } from 'react'
 import Node from './Node'
 import {BFSShortestPath} from '../../Algorithms/BFS.js'
 
+const ironMan = [
+    {
+        className: 'iron-man-red',
+        node: [[2,15],[2,16],[2,17],[3,15],[3,16],[3,17],[4,16],[5,12],[5,20],[6,12],[6,20]]
+    },
+    {
+        className: 'iron-man-yellow',
+        node: [[3,13],[3,14],[3,18],[3,19],[4,12],[4,13],[4,14],[4,15],[4,17],[4,18],[4,19],[4,20],[5,13],[5,14],[5,15],[5,16],[5,17],[5,18],[5,19],[6,15],[6,16],[6,17],[8,12],[8,13],[8,14],[8,15],[8,16],[8,17],[8,18],[8,19],[8,20],[7,12],[7,20],[9,13],[9,14],[9,15],[9,16],[9,17],[9,18],[9,19],[10,14],[10,15],[10,16],[10,17],[10,18],[11,14],[11,18]]
+    },
+    {
+        className: 'iron-man-blue',
+        node: [[7,13],[7,14],[7,15],[7,17],[7,18],[7,19]]
+    }
+]
+
 export default class Board extends Component {
 
     constructor(props) {
@@ -24,6 +39,7 @@ export default class Board extends Component {
         
         this.animatePath = this.animatePath.bind(this)
         this.handleClearPath = this.handleClearPath.bind(this)
+        this.generateIronMan = this.generateIronMan.bind(this)
     }
 
     componentDidMount() {
@@ -84,7 +100,8 @@ export default class Board extends Component {
         })
     }
 
-    animatePath() {
+    animatePath(index) {
+        console.log(index)
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
         let {startNodeState,endNodeState} = this.state
         for(let i = 0; i < visitedPathInOrder.length; i++) {
@@ -109,8 +126,8 @@ export default class Board extends Component {
 
     handleClearPath() {
         let {matrix,startNodeState,endNodeState} = this.state
-        for(let i = 0; i < 20; i++) {
-            for (let j = 0; j < 20; j++) {
+        for(let i = 0; i < 36; i++) {
+            for (let j = 0; j < 36; j++) {
                 if(endNodeState.x === i && endNodeState.y === j) {
                     document.getElementById(`node-${i}-${j}`).className = 'node endNode';
                 } else if (startNodeState.x === i && startNodeState.y === j) {
@@ -127,9 +144,9 @@ export default class Board extends Component {
     createBoard() {
         //Create visual grid
         let row = [];
-        for(let i = 0; i < 20; i++) {
+        for(let i = 0; i < 36; i++) {
             let col = [];
-            for(let j = 0; j < 20; j++) {
+            for(let j = 0; j < 36; j++) {
                 const nodeType = (i === 0 && j === 0) ? "start" : (i === 7 && j === 8) ? "end" : "regular";
                 col.push(<Node key={`${i}${j}`} 
                                 cordinate={[i,j]} 
@@ -142,8 +159,8 @@ export default class Board extends Component {
         }
         // Create backend grid
         let matrix = []
-        for (let i = 0; i < 20;i++) {
-            matrix.push(new Array(20).fill("P"))
+        for (let i = 0; i < 36;i++) {
+            matrix.push(new Array(36).fill("P"))
         }
 
         this.setState({
@@ -151,14 +168,26 @@ export default class Board extends Component {
             matrix
         })
     }
+
+
+    generateIronMan() {
+        ironMan.forEach((pixel) => {
+            let pixelCount = pixel.node.length;
+
+            for (let i = 0; i < pixelCount; i++) {
+                document.getElementById(`node-${pixel.node[i][0]}-${pixel.node[i][1]}`).className = `node ${pixel.className}`;
+            }
+        })
+    }
     
     
     render() {
         return (
-            <div style={{width: "500px", marginLeft:"auto", marginRight: "auto"}}>
+            <div style={{width: "900px", marginLeft:"auto", marginRight: "auto"}}>
                 {this.state.grid}
                 <button onClick={this.animatePath}>View Animation</button>
                 <button onClick={this.handleClearPath}>Clear Path</button>
+                <button onClick={this.generateIronMan}>Generate Iron Man</button>
             </div>
         )
     }
