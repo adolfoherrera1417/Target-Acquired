@@ -1,8 +1,11 @@
 .node {
-    border: solid;
+    border: 1px solid;
     width: 25px;
     height: 25px;
     display: inline-block;
+    margin: 0 0;
+    padding: 0 0;
+    float: left;
 }
 
 .visited {

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function PermanentDrawerLeft() {
-  const { forwardRef, useRef, useImperativeHandle } = React;
+  const {useRef} = React;
   const classes = useStyles();
   const childRef = useRef();
   return (
@@ -76,7 +76,7 @@ export default function PermanentDrawerLeft() {
         <Divider />
         <List>
           {['Clear Path', 'Clear Walls', 'Clear Board', 'Generate Pixel Art'].map((text, index) => (
-            <ListItem button key={text} onClick={() => {console.log(index)}}>
+            <ListItem button key={text} onClick={() => childRef.current.handleClearPath(index)}>
               <ListItemIcon><HighlightOffOutlinedIcon /></ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>

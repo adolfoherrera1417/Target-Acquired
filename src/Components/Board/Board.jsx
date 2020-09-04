@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Node from './Node'
 import {BFSShortestPath} from '../../Algorithms/BFS.js'
 
+//https://www.pinterest.com/pin/122934264800644434/visual-search/?cropSource=6&h=378&w=346&x=10&y=10
 const ironMan = [
     {
         className: 'iron-man-red',
@@ -34,7 +35,9 @@ export default class Board extends Component {
                 pressed: false,
                 x: 7,
                 y: 8
-            }
+            },
+            path: [],
+            visitedPathInOrder: []
         }      
         
         this.animatePath = this.animatePath.bind(this)
@@ -101,9 +104,9 @@ export default class Board extends Component {
     }
 
     animatePath(index) {
-        console.log(index)
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
         let {startNodeState,endNodeState} = this.state
+        this.setState({path,visitedPathInOrder})
         for(let i = 0; i < visitedPathInOrder.length; i++) {
 
             setTimeout(() => {
@@ -122,27 +125,40 @@ export default class Board extends Component {
                 },50*j);}},10*i)
             }
         }
+
     }
 
-    handleClearPath() {
-        let {matrix,startNodeState,endNodeState} = this.state
-        for(let i = 0; i < 36; i++) {
-            for (let j = 0; j < 36; j++) {
-                if(endNodeState.x === i && endNodeState.y === j) {
-                    document.getElementById(`node-${i}-${j}`).className = 'node endNode';
-                } else if (startNodeState.x === i && startNodeState.y === j) {
-                    document.getElementById(`node-${i}-${j}`).className = 'node startNode';
-                } else {
-                    matrix[i][j] = "P"
-                    document.getElementById(`node-${i}-${j}`).className = 'node';
+    clearCordinate(cordinate) {
+        let {startNodeState, endNodeState} = this.state
+        if(endNodeState.x === cordinate.x && endNodeState.y === cordinate.y) {
+            document.getElementById(`node-${cordinate.x}-${cordinate.y}`).className = 'node endNode';
+        } else if (startNodeState.x === cordinate.x && startNodeState.y === cordinate.y) {
+            document.getElementById(`node-${cordinate.x}-${cordinate.y}`).className = 'node startNode';
+        } else {
+            // matrix[cordinate.x][cordinate.y] = "P"
+            document.getElementById(`node-${cordinate.x}-${cordinate.y}`).className = 'node';
+        }
+    }
+
+    handleClearPath(index) {
+        if (index === 0) {
+            //Clear Path Only
+            let {path, visitedPathInOrder} = this.state;
+            path.forEach(cordinate => {this.clearCordinate(cordinate)})
+            visitedPathInOrder.forEach(cordinate => {this.clearCordinate(cordinate)})
+        } else if(index === 1) {
+            for(let i = 0; i < 36; i++) {
+                for (let j = 0; j < 36; j++) {
+                    this.clearCordinate({x:i,y:j});
                 }
             }
+        } else if(index === 3) {
+            console.log("Hello WOrld")
+            this.generateIronMan();
         }
-        this.setState({matrix})
     }
 
     createBoard() {
-        //Create visual grid
         let row = [];
         for(let i = 0; i < 36; i++) {
             let col = [];
@@ -173,13 +189,11 @@ export default class Board extends Component {
     generateIronMan() {
         ironMan.forEach((pixel) => {
             let pixelCount = pixel.node.length;
-
             for (let i = 0; i < pixelCount; i++) {
                 document.getElementById(`node-${pixel.node[i][0]}-${pixel.node[i][1]}`).className = `node ${pixel.className}`;
             }
         })
     }
-    
     
     render() {
         return (
