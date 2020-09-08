@@ -105,6 +105,8 @@ export default class Board extends Component {
 
     animatePath(index) {
         let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
+        console.log(path)
+        
         let {startNodeState,endNodeState} = this.state
         this.setState({path,visitedPathInOrder})
         for(let i = 0; i < visitedPathInOrder.length; i++) {
