@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Node from './Node'
 import {BFSShortestPath} from '../../Algorithms/BFS.js'
+import {AstarShortestPath} from '../../Algorithms/Astar.js'
 
 //https://www.pinterest.com/pin/122934264800644434/visual-search/?cropSource=6&h=378&w=346&x=10&y=10
 const ironMan = [
@@ -104,9 +105,17 @@ export default class Board extends Component {
     }
 
     animatePath(index) {
-        let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
-        console.log(path)
+        // let {path,visitedPathInOrder} = BFSShortestPath(this.state.matrix,{x: this.state.startNodeState.x, y: this.state.startNodeState.y},{x:this.state.endNodeState.x, y: this.state.endNodeState.y});
         
+        //A* ONLY
+        let tempmatrix = [];
+        for (let i = 0; i < 20;i++) {
+            tempmatrix.push(new Array(20).fill("E"))
+        }
+        let {path,visitedPathInOrder} = AstarShortestPath(tempmatrix,{x:this.state.endNodeState.x, y:this.state.endNodeState.y});
+        // A* ONLY
+
+
         let {startNodeState,endNodeState} = this.state
         this.setState({path,visitedPathInOrder})
         for(let i = 0; i < visitedPathInOrder.length; i++) {

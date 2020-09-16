@@ -68,6 +68,10 @@ const reconstructPath = (start, end, prev) => {
     return reversed;
 }
 
+/*
+Returns and array of objects EX. [{x: 0, y: 0}, {x: 1, y: 0}]
+
+*/
 export const BFSShortestPath = (matrix, startNode, endNode) => {
     let {prev,visitedPathInOrder,found} = solve(matrix, startNode, endNode);
     let path = found ? reconstructPath(startNode,endNode,prev) : [];

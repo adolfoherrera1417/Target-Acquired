@@ -1,23 +1,32 @@
-const { Heap } = require('heap-js');
+// const { Heap } = require('heap-js');
 //https://github.com/ignlg/heap-js
 
-// const customPriorityComparator = (a, b) => a.fcost - b.fcost;
+// Node class to calculate its own values
 
+//gCost = distance from starting node
+//hCost = distance from the target node
+//fCost = gCost + hCost
+
+// const PriorityQueue = require('./pq.js');
 
 class sNode {
     bObstacle = false;
     visted = false;
-    fGlobalGoal = Infinity;
-    fLocalGoal = Infinity;
+    gCost = Infinity;
+    fCost = Infinity;
+    parent;
     x;
     y;
-    parent;
 
+    // constructor
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
 }
+
+// const queue = new PriorityQueue();
+
 
 const createNodeMatrix = (matrix) => {
     let nodeMatrix = [];
@@ -31,103 +40,126 @@ const createNodeMatrix = (matrix) => {
     return nodeMatrix;
 }
 
-const solve = (matrix) => {
-    const customPriorityComparator = (a, b) => a.fGlobalGoal - b.fGlobalGoal;
+const solve = (matrix, endNode) => {
+    // Create a min Queue based on nodes fcost value
+    console.log("++++++++++++++++++++++")
+    const customPriorityComparator = (a, b) => a.fCost - b.fCost;
     let openList = new Heap(customPriorityComparator);
-
+    let openList = new PriorityQueue((a, b) => a.fCost <= b.fCost);
+    let closedList = new Set();
+    let visitedPathInOrder = [];
     let startNode = matrix[0][0];
-    startNode.fLocalGoal = 0;
-    startNode.fGlobalGoal = manhattanDistance(startNode,matrix[1][1]);
+    startNode.gCost = 0;
+    startNode.hCost = manhattanDistance(startNode,endNode);
+    startNode.fCost = startNode.gCost + startNode.hCost;
+    matrix[0][0] = startNode;
     openList.push(startNode);
+    
+    let count = 0;
 
     while(!openList.isEmpty()) {
-        let node = openList.peek();
+        let currentNode = openList.peek();
+        console.log(currentNode);
         openList.pop();
-        node.visted = true;
+        closedList.add(currentNode);
 
-        //Grab top node
-        let temp;
-        if (node.y - 1 >= 0 && !matrix[node.x][node.y-1].visted) {
-            temp = matrix[node.x][node.y-1];
-            
-           
-            let fPossbilyLowerGoal = node.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-            if (fPossbilyLowerGoal < temp.fLocalGoal) {
-                temp.parent = node;
-                temp.fLocalGoal = fPossbilyLowerGoal;
-                temp.fGlobalGoal = temp.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-            }
-            matrix[temp.x][temp.y] = temp;
-            if(temp.x === 1 && temp.y === 1) { break; }
-            openList.push(temp);
-        }
-
-        //Grab bottom node
-        if (node.y + 1 < matrix.length && !matrix[node.x][node.y+1].visted) {
-            temp = matrix[node.x][node.y+1];
-           
-
-
-            let fPossbilyLowerGoal = node.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-           
-
-            if (fPossbilyLowerGoal < temp.fLocalGoal) {
-                temp.parent = node;
-                temp.fLocalGoal = fPossbilyLowerGoal;
-                temp.fGlobalGoal = temp.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-            }
-            matrix[temp.x][temp.y] = temp;
-            if(temp.x === 1 && temp.y === 1) { break; }
-            openList.push(temp);
-
-
-            
+        if (currentNode.x === endNode.x && currentNode.y === endNode.y) {
+            break;
         }
         
-        //Grab right node
-
-        if (node.x - 1 >= 0 && !matrix[node.x-1][node.y].visted) {
-            temp = matrix[node.x - 1][node.y];
-        
-            let fPossbilyLowerGoal = node.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-           
-
-            if (fPossbilyLowerGoal < temp.fLocalGoal) {
-                temp.parent = node;
-                temp.fLocalGoal = fPossbilyLowerGoal;
-                temp.fGlobalGoal = temp.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
-            }
-            matrix[temp.x][temp.y] = temp;
-            if(temp.x === 1 && temp.y === 1) { break; }
-            openList.push(temp);
-        }
-
-        //Grab left node
-        if (node.x + 1 < matrix[0].length && !matrix[node.x+1][node.y].visted) {
-            temp = matrix[node.x + 1][node.y];
-
-        
-            let fPossbilyLowerGoal = node.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
+        visitedPathInOrder.push(currentNode);
+        currentNode.visted = true;
+        //Grab LEFT node
+        let neighbor;
+        if (currentNode.y - 1 >= 0 && !closedList.has(matrix[currentNode.x][currentNode.y-1])) {
+            neighbor = matrix[currentNode.x][currentNode.y-1];
+            let tentativeGCost = currentNode.gCost + manhattanDistance(neighbor,currentNode);
             
-
-            if (fPossbilyLowerGoal < temp.fLocalGoal) {
-                temp.parent = node;
-                temp.fLocalGoal = fPossbilyLowerGoal;
-                temp.fGlobalGoal = temp.fLocalGoal + manhattanDistance(temp,matrix[1][1]);
+            if (tentativeGCost < neighbor.gCost) {
+                neighbor.parent = currentNode;
+                neighbor.gCost = tentativeGCost;
+                neighbor.fCost = neighbor.gCost + manhattanDistance(neighbor,endNode);
             }
-            matrix[temp.x][temp.y] = temp;
-            if(temp.x === 1 && temp.y === 1) { break; }
-            openList.push(temp);
+            matrix[neighbor.x][neighbor.y] = neighbor;
+            if (!openList.contains(neighbor)) {
+                openList.push(neighbor);
+            }
         }
 
-        matrix[node.x][node.y] = node;
+        //Grab RIGHT node
+        if (currentNode.y + 1 < matrix.length && !closedList.has(matrix[currentNode.x][currentNode.y+1])) {
+            neighbor = matrix[currentNode.x][currentNode.y+1];
+
+            let tentativeGCost = currentNode.gCost + manhattanDistance(neighbor,currentNode);
+            console.log("Calcualting Bottom Node...")
+            console.log("tentativGCost: " + tentativeGCost);
+            if (tentativeGCost < neighbor.gCost) {
+                neighbor.parent = currentNode;
+                neighbor.gCost = tentativeGCost;
+                neighbor.fCost = neighbor.gCost + manhattanDistance(neighbor,endNode);
+                console.log("Manhattan Distance: " + manhattanDistance(neighbor,endNode))
+                console.log("fCost: " + neighbor.fCost);
+            }
+            matrix[neighbor.x][neighbor.y] = neighbor;
+            if (!openList.contains(neighbor)) {
+                openList.push(neighbor);
+            }
+        }
+        
+        //Grab TOP node
+        if (currentNode.x - 1 >= 0 && !closedList.has(matrix[currentNode.x-1][currentNode.y])) {
+            neighbor = matrix[currentNode.x - 1][currentNode.y];
+        
+            let tentativeGCost = currentNode.gCost + manhattanDistance(neighbor,currentNode);
+            
+            if (tentativeGCost < neighbor.gCost) {
+                neighbor.parent = currentNode;
+                neighbor.gCost = tentativeGCost;
+                neighbor.fCost = neighbor.gCost + manhattanDistance(neighbor,endNode);
+            }
+            matrix[neighbor.x][neighbor.y] = neighbor;
+            if (!openList.contains(neighbor)) {
+                openList.push(neighbor);
+            }
+        }
+
+        //Grab BOTTOM node
+        if (currentNode.x + 1 < matrix[0].length && !closedList.has(matrix[currentNode.x+1][currentNode.y])) {
+            neighbor = matrix[currentNode.x + 1][currentNode.y];
+            console.log('--------------------');
+            let tentativeGCost = currentNode.gCost + manhattanDistance(neighbor,currentNode);
+
+            console.log("Calcualting Right Node...")
+            console.log("tentativGCost: " + tentativeGCost);
+            if (tentativeGCost < neighbor.gCost) {
+                
+                neighbor.parent = currentNode;
+                neighbor.gCost = tentativeGCost;
+                neighbor.fCost = neighbor.gCost + manhattanDistance(neighbor,endNode);
+
+                console.log("Manhattan Distance: " + manhattanDistance(neighbor,endNode))
+                console.log("fCost: " + neighbor.fCost);
+            }
+            matrix[neighbor.x][neighbor.y] = neighbor;
+            if (!openList.contains(neighbor)) {
+                openList.push(neighbor);
+            }
+        }
+        matrix[currentNode.x][currentNode.y] = currentNode;
+        count = count + 1;
+        console.log("++++++++++++++++++++++")
     }
-    return matrix;
+    let path = matrix;
+    return {path,closedList,visitedPathInOrder};
 }
 
 const manhattanDistance = (current_cell, goal) => {
-    let distance = Math.abs(current_cell.x  - goal.x) + Math.abs(current_cell.y - goal.y)
-    return distance;
+    let dstX = Math.abs(current_cell.x  - goal.x);
+    let dstY = Math.abs(current_cell.y - goal.y);
+    if (dstX > dstY) {
+        return 14*dstY + 10* (dstX-dstY);
+    }
+    return 14*dstX + 10 * (dstY-dstX);
 }
 
 const reconstructPath = (matrix,endNode) => {
@@ -141,18 +173,27 @@ const reconstructPath = (matrix,endNode) => {
     return path;
 }
 
-const AstarShortestPath = (matrix) => {
+const reconstructVisitedPath = (closedList) => {
+    let visitedPathInOrder = []
+    for (let i = 0; i < closedList.length; i++) {
+        visitedPathInOrder.push({x: closedList[i].x,y: closedList[i].y});
+    }
+    return visitedPathInOrder;
+}
+export const  AstarShortestPath = (matrix, endNode) => {
     let nodeMatrix = createNodeMatrix(matrix);
-    let path = solve(nodeMatrix);
-    console.log(path);
-    let legitPath = reconstructPath(path,path[1][1]);
-    console.log(legitPath);
+    let {path,closedList,visitedPathInOrder} = solve(nodeMatrix,endNode);
+    let legitPath = reconstructPath(path,path[endNode.x][endNode.y]);
+    visitedPathInOrder = reconstructVisitedPath(visitedPathInOrder)
+    path = legitPath
+    return {path,visitedPathInOrder};
 }
 
-
-let matrix = [];
-for (let i = 0; i < 3;i++) {
-    matrix.push(new Array(3).fill("E"))
+let tempmatrix = [];
+for (let i = 0; i < 10;i++) {
+    tempmatrix.push(new Array(10).fill("E"))
 }
 
-AstarShortestPath(matrix);
+// let {path,visitedPathInOrder} = AstarShortestPath(tempmatrix,{x:1, y:7});
+// console.log(path)
+// console.log(visitedPathInOrder.length);
