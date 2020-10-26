@@ -92,7 +92,7 @@ const solve = (graph, startNode, endNode) => {
 
             if (!neighbor.opened || possibleGCost < neighbor.gCost) {
                 neighbor.gCost = possibleGCost;
-                neighbor.fCost = neighbor.gCost + 10 * manhattanDistance(neighbor,endNode);
+                neighbor.fCost = neighbor.gCost + 3 * manhattanDistance(neighbor,endNode);
                 neighbor.parent = node;
 
                 if (!neighbor.opened) {
@@ -131,7 +131,6 @@ const reconstructPath = (endNode) => {
 export const AstarShortestPath = (matrix, startNode, endNode) => {
     let graph = createNodeMatrix(matrix);
     let {path,visitedPathInOrder} = solve(graph,startNode,endNode);
-    console.log(visitedPathInOrder.length)
     return {path,visitedPathInOrder};
 }
 
